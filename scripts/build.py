@@ -63,9 +63,9 @@ def generate_index(notebooks: dict[List[str]], output_dir: str) -> None:
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col">
-        <h2 class="text-xl font-bold mb-4">4EK214</h2>"""
+        <h2 class="text-xl font-bold mb-4">narozeniny</h2>"""
             )
-            for notebook in notebooks['4EK214']:
+            for notebook in notebooks['narozeniny']:
                 notebook_name = notebook.split("/")[-1].replace(".py", "")
                 display_name = notebook_name.replace("_", " ").title()
                 print(display_name)
@@ -80,25 +80,6 @@ def generate_index(notebooks: dict[List[str]], output_dir: str) -> None:
                 )
             f.write(
       """</div>
-      <div class="flex flex-col">
-        <h2 class="text-xl font-bold mb-4">4EK602</h2>"""
-            )
-
-            for notebook in notebooks['4EK602']:
-                notebook_name = notebook.split("/")[-1].replace(".py", "")
-                display_name = notebook_name.replace("_", " ").title()
-
-                f.write(
-                    f'      <div class="p-4 border border-gray-200 rounded-lg max-w-xs justify-self-start">\n'
-                    f'        <h3 class="text-lg font-semibold mb-2">{display_name}</h3>\n'
-                    f'        <div class="flex gap-2">\n'
-                    f'          <a href="{notebook.replace(".py", ".html")}" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded">Open</a>\n'
-                    f"        </div>\n"
-                    f"      </div>\n"
-                )
-
-            f.write(
-        """</div>
     </div>
   </body>
 </html>"""
@@ -137,7 +118,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    courses = ['4EK214', '4EK602']
+    courses = ['narozeniny']
     notebooks = {}
     for course in courses:
         notebooks[course] = export_course(course=course, dir=args.output_dir)
