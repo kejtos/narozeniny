@@ -161,10 +161,10 @@ def _(correct, incorrect, puzzles, results):
 
 
 @app.cell
-def _(BytesIO, Image, base64, keep_probability, np):
+def _(BytesIO, Image, base64, keep_probability, mo, np):
     # pend = mo.image(src='./public/pend.png')
 
-    image = Image.open('public/pend.png').convert('L')
+    image = Image.open(mo.notebook_location() / "public" / "pend.png").convert('L')
     # image = Image.open('./public/pend.png').convert('L')
     modified_image = np.array(image).copy()
 
