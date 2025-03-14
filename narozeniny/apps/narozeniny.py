@@ -4,7 +4,6 @@
 #     "altair==5.5.0",
 #     "marimo",
 #     "numpy==2.2.3",
-#     "opencv-python==4.11.0.86",
 #     "polars==1.24.0",
 # ]
 # ///
@@ -23,12 +22,14 @@ def _():
 
 @app.cell
 def _():
-    import cv2
+    # import cv2
     import numpy as np
     import base64
     import altair as alt
     import polars as pl
-    return alt, base64, cv2, np, pl
+    from PIL import Image
+    from io import BytesIO
+    return BytesIO, Image, alt, base64, np, pl
 
 
 @app.cell
@@ -160,21 +161,60 @@ def _(correct, incorrect, puzzles, results):
 
 
 @app.cell
-def _(alt, base64, cv2, keep_probability, np, pl):
-    image = cv2.imread('./public/pend.png', cv2.IMREAD_GRAYSCALE)
+def _():
+    import os
+    print(os.getcwd())
+    return (os,)
 
-    modified_image = image.copy()
 
-    white_pixels = (modified_image >= 0)
+@app.cell
+def _(BytesIO, Image, base64, keep_probability, np):
+    image = Image.open('./narozeniny/apps/public/pend.png').convert('L')
+    # image = Image.open('./public/pend.png').convert('L')
+    modified_image = np.array(image).copy()
 
     random_mask = np.random.rand(*modified_image.shape) > keep_probability
 
-    hide_mask = np.logical_and(white_pixels, random_mask)
+    hide_mask = random_mask
+
     modified_image[hide_mask] = 0
 
-    _, buffer = cv2.imencode('.png', modified_image)
-    img_base64 = base64.b64encode(buffer).decode('utf-8')
+    modified_pil = Image.fromarray(modified_image)
+
+    buffer = BytesIO()
+    modified_pil.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     img_uri = f"data:image/png;base64,{img_base64}"
+    return (
+        buffer,
+        hide_mask,
+        image,
+        img_base64,
+        img_uri,
+        modified_image,
+        modified_pil,
+        random_mask,
+    )
+
+
+@app.cell
+def _(alt, img_uri, modified_image, pl):
+    # image = cv2.imread('./public/pend.png', cv2.IMREAD_GRAYSCALE)
+
+    # modified_image = image.copy()
+
+    # white_pixels = (modified_image >= 0)
+
+    # random_mask = np.random.rand(*modified_image.shape) > keep_probability
+
+    # hide_mask = np.logical_and(white_pixels, random_mask)
+    # modified_image[hide_mask] = 0
+
+    # _, buffer = cv2.imencode('.png', modified_image)
+    # img_base64 = base64.b64encode(buffer).decode('utf-8')
+    # img_uri = f"data:image/png;base64,{img_base64}"
 
     df = pl.DataFrame({"url": [img_uri]})
 
@@ -184,18 +224,7 @@ def _(alt, base64, cv2, keep_probability, np, pl):
     ).encode(
         url='url:N'
     )
-    return (
-        buffer,
-        chart,
-        df,
-        hide_mask,
-        image,
-        img_base64,
-        img_uri,
-        modified_image,
-        random_mask,
-        white_pixels,
-    )
+    return chart, df
 
 
 @app.cell

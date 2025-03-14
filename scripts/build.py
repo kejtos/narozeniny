@@ -120,7 +120,7 @@ def main() -> None:
     for course in courses:
         notebooks[course] = export_course(course=course, dir=args.output_dir)
 
-    generate_index(notebooks, args.output_dir)
+    # generate_index(notebooks, args.output_dir)
 
 
 if __name__ == "__main__":
