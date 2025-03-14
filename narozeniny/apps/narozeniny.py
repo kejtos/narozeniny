@@ -213,10 +213,10 @@ def _(mo):
           <script async src="https://cdn.player.zone/static/embed.js?nocache=707516"></script>
         </body>
         </html>'
-      width="100%"
-      height="650"
-      frameborder="0"
-      scrolling="no">
+    width="100%"
+    height="650"
+    rameborder="0"
+    scrolling="no">
     </iframe>"""
 
     nonogram = mo.iframe(
