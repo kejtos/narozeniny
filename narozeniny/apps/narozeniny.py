@@ -22,15 +22,13 @@ def _():
 
 @app.cell
 def _():
-    import cv2
     import numpy as np
-    import base64
     import altair as alt
     import polars as pl
-    from PIL import Image
-    from io import BytesIO
+    import pickle
+    import requests
     import imageio
-    return BytesIO, Image, alt, base64, cv2, imageio, np, pl
+    return alt, imageio, np, pickle, pl, requests
 
 
 @app.cell
@@ -103,33 +101,36 @@ def _(np):
 @app.cell
 def _(mo, puzzles, results):
     n_correct = 0
-    results.value
     mo.stop(not results.value)
 
-    if results.value['riddle_1'].startswith('legend'):
-        puzzles[0] = 1
-    else:
-        puzzles[0] = 0
+    try:
+        results.value
+        if results.value['riddle_1'].startswith('legend'):
+            puzzles[0] = 1
+        else:
+            puzzles[0] = 0
 
-    if results.value['riddle_2'] == 7:
-        puzzles[1] = 1
-    else:
-        puzzles[1] = 0
+        if results.value['riddle_2'] == 7:
+            puzzles[1] = 1
+        else:
+            puzzles[1] = 0
 
-    if results.value['riddle_3'].startswith('karel'):
-        puzzles[2] = 1
-    else:
-        puzzles[2] = 0
+        if results.value['riddle_3'].startswith('karel'):
+            puzzles[2] = 1
+        else:
+            puzzles[2] = 0
 
-    if results.value['riddle_4'].startswith('bebe'):
-        puzzles[3] = 1
-    else:
-        puzzles[3] = 0
+        if results.value['riddle_4'].startswith('bebe'):
+            puzzles[3] = 1
+        else:
+            puzzles[3] = 0
 
-    if results.value['riddle_5'].startswith(('pořád dvacet', 'porad dvacet')):
-        puzzles[4] = 1
-    else:
-        puzzles[4] = 0
+        if results.value['riddle_5'].startswith(('pořád dvacet', 'porad dvacet')):
+            puzzles[4] = 1
+        else:
+            puzzles[4] = 0
+    except:
+        pass
 
     n_correct = puzzles.sum()
 
@@ -162,62 +163,25 @@ def _(correct, incorrect, puzzles, results):
 
 
 @app.cell
-def _(BytesIO, Image, base64, imageio, keep_probability, mo, np):
-    image = imageio.imread(mo.notebook_location() / 'public' / 'pend.png')
-    modified_image = np.dot(image[...,:3], [0.2989, 0.5870, 0.1140]).astype(np.uint8).copy()
-
-    random_mask = np.random.rand(*modified_image.shape) > keep_probability
-
-    hide_mask = random_mask
-
-    modified_image[hide_mask] = 0
-
-    modified_pil = Image.fromarray(modified_image)
-
-    buffer = BytesIO()
-    modified_pil.save(buffer, format="PNG")
-    buffer.seek(0)
-
-    img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    img_uri = f"data:image/png;base64,{img_base64}"
-    return (
-        buffer,
-        hide_mask,
-        image,
-        img_base64,
-        img_uri,
-        modified_image,
-        modified_pil,
-        random_mask,
-    )
+def _(mo):
+    path_pend = str(mo.notebook_location() / 'public' / 'pend.png')
+    return (path_pend,)
 
 
 @app.cell
-def _():
-    # image = cv2.imread(mo.notebook_location() / 'public' / 'pend.png', cv2.IMREAD_GRAYSCALE)
+def _(imageio, keep_probability, mo, np, path_pend, pickle, requests):
+    try:
+        response = requests.get(path_pend)
+        image = imageio.imread(response.content)
+        pend = np.dot(image[...,:3], [0.2989, 0.5870, 0.1140]).astype(np.uint8).copy()
+    except:
+        with open(mo.notebook_location() / 'public' / 'pend.pkl', 'rb') as f:
+            pend = pickle.load(f)
 
-    # modified_image = image.copy()
-
-    # white_pixels = (modified_image >= 0)
-
-    # random_mask = np.random.rand(*modified_image.shape) > keep_probability
-
-    # hide_mask = np.logical_and(white_pixels, random_mask)
-    # modified_image[hide_mask] = 0
-
-    # _, buffer = cv2.imencode('.png', modified_image)
-    # img_base64 = base64.b64encode(buffer).decode('utf-8')
-    # img_uri = f"data:image/png;base64,{img_base64}"
-
-    # df = pl.DataFrame({"url": [img_uri]})
-
-    # chart = alt.Chart(df).mark_image(
-    #     width=modified_image.shape[1],
-    #     height=modified_image.shape[0]
-    # ).encode(
-    #     url='url:N'
-    # )
-    return
+    random_mask = np.random.rand(*pend.shape) > keep_probability
+    hide_mask = random_mask
+    pend[hide_mask] = 0
+    return f, hide_mask, image, pend, random_mask, response
 
 
 @app.cell
@@ -307,14 +271,8 @@ def _(results):
 
 
 @app.cell
-def _(Image):
-    Image.open('public/pend.png').convert('L')
-    return
-
-
-@app.cell
-def _(img_uri, mo):
-    mo.image(img_uri)
+def _(mo, pend):
+    mo.image(pend)
     return
 
 
