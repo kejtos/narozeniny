@@ -22,7 +22,7 @@ def _():
 
 @app.cell
 def _():
-    # import cv2
+    import cv2
     import numpy as np
     import base64
     import altair as alt
@@ -30,7 +30,7 @@ def _():
     from PIL import Image
     from io import BytesIO
     import imageio
-    return BytesIO, Image, alt, base64, imageio, np, pl
+    return BytesIO, Image, alt, base64, cv2, imageio, np, pl
 
 
 @app.cell
@@ -163,11 +163,8 @@ def _(correct, incorrect, puzzles, results):
 
 @app.cell
 def _(BytesIO, Image, base64, imageio, keep_probability, mo, np):
-    # pend = mo.image(src='./public/pend.png')
-
-    image = Image.fromarray(imageio.imread(mo.notebook_location() / 'public' / 'pend.png')).convert('L')
-    # image = Image.open('./public/pend.png').convert('L')
-    modified_image = np.array(image).copy()
+    image = imageio.imread(mo.notebook_location() / 'public' / 'pend.png')
+    modified_image = np.dot(image[...,:3], [0.2989, 0.5870, 0.1140]).astype(np.uint8).copy()
 
     random_mask = np.random.rand(*modified_image.shape) > keep_probability
 
@@ -197,8 +194,7 @@ def _(BytesIO, Image, base64, imageio, keep_probability, mo, np):
 
 @app.cell
 def _():
-    # image = cv2.imread('./public/pend.png', cv2.IMREAD_GRAYSCALE)
-    # image = cv2.imread('./narozeniny/apps/public/pend.png', cv2.IMREAD_GRAYSCALE)
+    # image = cv2.imread(mo.notebook_location() / 'public' / 'pend.png', cv2.IMREAD_GRAYSCALE)
 
     # modified_image = image.copy()
 
