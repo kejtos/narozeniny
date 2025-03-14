@@ -33,8 +33,9 @@ def _():
 
 @app.cell
 def _(mo):
-    done_button = mo.ui.run_button(label='HOTOVO!')
-    return (done_button,)
+    done_button = mo.ui.run_button(label='HOTOVO?')
+    password = mo.ui.text(placeholder='Heslo?')
+    return done_button, password
 
 
 @app.cell
@@ -117,7 +118,7 @@ def _(mo, puzzles, results):
         puzzles[2] = 1
     else:
         puzzles[2] = 0
-        
+
     if results.value['riddle_4'].startswith('bebe'):
         puzzles[3] = 1
     else:
@@ -264,7 +265,8 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(mo):
+    mo.md(r"""# K dárku musíš najít heslo!""")
     return
 
 
@@ -304,13 +306,25 @@ def _(done_button, mo, n_correct, results):
 
 
 @app.cell
-def _(done_button, mo, results):
+def _(done_button, mo, password, results):
     results.value
 
     if done_button.value:
-        mo.output.replace(mo.md('[Tak už balíš?](https://tribes-unite.com/)'))
+        mo.output.replace(password)
     else:
         mo.output.replace(mo.md('Hmmmmmmmm...'))
+
+    if password.value.lower() == 'pendulum':
+        mo.output.replace(mo.md('[Tak už balíš?](https://tribes-unite.com/)'))
+    return
+
+
+@app.cell
+def _(mo, password):
+    if password.value.lower() == 'pendulum':
+        mo.output.replace(mo.md('[Tak už balíš?](https://tribes-unite.com/)'))
+    else:
+        mo.output.replace(mo.md(''))
     return
 
 
