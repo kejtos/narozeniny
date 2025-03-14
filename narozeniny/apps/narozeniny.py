@@ -29,7 +29,8 @@ def _():
     import polars as pl
     from PIL import Image
     from io import BytesIO
-    return BytesIO, Image, alt, base64, np, pl
+    import imageio
+    return BytesIO, Image, alt, base64, imageio, np, pl
 
 
 @app.cell
@@ -161,10 +162,10 @@ def _(correct, incorrect, puzzles, results):
 
 
 @app.cell
-def _(BytesIO, Image, base64, keep_probability, mo, np):
+def _(BytesIO, Image, base64, imageio, keep_probability, mo, np):
     # pend = mo.image(src='./public/pend.png')
 
-    image = Image.open(mo.notebook_location() / "public" / "pend.png").convert('L')
+    image = Image.fromarray(imageio.imread(mo.notebook_location() / 'public' / 'pend.png')).convert('L')
     # image = Image.open('./public/pend.png').convert('L')
     modified_image = np.array(image).copy()
 
@@ -237,9 +238,7 @@ def _(mo):
           <div class="widget-container" data-widget-id="nonograms" data-widget-height data-widget-rnd="1" data-widget-lang="en"></div>
           <script async src="https://cdn.player.zone/static/embed.js?nocache=707516"></script>
         </body>
-        </html>'
-      frameborder="1"
-      scrolling="no">
+        </html>
     </iframe>"""
 
     nonogram = mo.iframe(
