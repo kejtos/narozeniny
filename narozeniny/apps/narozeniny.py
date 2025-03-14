@@ -161,16 +161,11 @@ def _(correct, incorrect, puzzles, results):
 
 
 @app.cell
-def _():
-    import os
-    print(os.getcwd())
-    return (os,)
-
-
-@app.cell
 def _(BytesIO, Image, base64, keep_probability, np):
-    image = Image.open('./narozeniny/apps/public/pend.png').convert('L')
-    # image = Image.open('./public/pend.png').convert('L')
+    # pend = mo.image(src='./public/pend.png')
+
+    # image = Image.open('./narozeniny/apps/public/pend.png').convert('L')
+    image = Image.open('./public/pend.png').convert('L')
     modified_image = np.array(image).copy()
 
     random_mask = np.random.rand(*modified_image.shape) > keep_probability
@@ -200,8 +195,9 @@ def _(BytesIO, Image, base64, keep_probability, np):
 
 
 @app.cell
-def _(alt, img_uri, modified_image, pl):
+def _():
     # image = cv2.imread('./public/pend.png', cv2.IMREAD_GRAYSCALE)
+    # image = cv2.imread('./narozeniny/apps/public/pend.png', cv2.IMREAD_GRAYSCALE)
 
     # modified_image = image.copy()
 
@@ -216,15 +212,15 @@ def _(alt, img_uri, modified_image, pl):
     # img_base64 = base64.b64encode(buffer).decode('utf-8')
     # img_uri = f"data:image/png;base64,{img_base64}"
 
-    df = pl.DataFrame({"url": [img_uri]})
+    # df = pl.DataFrame({"url": [img_uri]})
 
-    chart = alt.Chart(df).mark_image(
-        width=modified_image.shape[1],
-        height=modified_image.shape[0]
-    ).encode(
-        url='url:N'
-    )
-    return chart, df
+    # chart = alt.Chart(df).mark_image(
+    #     width=modified_image.shape[1],
+    #     height=modified_image.shape[0]
+    # ).encode(
+    #     url='url:N'
+    # )
+    return
 
 
 @app.cell
@@ -318,8 +314,8 @@ def _(results):
 
 
 @app.cell
-def _(chart):
-    chart
+def _(img_uri, mo):
+    mo.image(img_uri)
     return
 
 
