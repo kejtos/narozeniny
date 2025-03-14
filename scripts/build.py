@@ -58,9 +58,6 @@ def generate_index(notebooks: dict[List[str]], output_dir: str) -> None:
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   </head>
   <body class="font-sans max-w-4xl mx-auto p-8 leading-relaxed">
-    <div class="mb-8">
-        <p class="text-sm text-gray-600">All the scripts and apps should run in your browser. However, as a result, some of them might take a few seconds to run, especially if you have got a slow PC.</p>
-    </div>
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col">
         <h2 class="text-xl font-bold mb-4">narozeniny</h2>"""
@@ -123,7 +120,7 @@ def main() -> None:
     for course in courses:
         notebooks[course] = export_course(course=course, dir=args.output_dir)
 
-    generate_index(notebooks, args.output_dir)
+    # generate_index(notebooks, args.output_dir)
 
 
 if __name__ == "__main__":

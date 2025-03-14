@@ -161,7 +161,7 @@ def _(correct, incorrect, puzzles, results):
 
 @app.cell
 def _(alt, base64, cv2, keep_probability, np, pl):
-    image = cv2.imread('pend.png', cv2.IMREAD_GRAYSCALE)
+    image = cv2.imread('./public/pend.png', cv2.IMREAD_GRAYSCALE)
 
     modified_image = image.copy()
 
@@ -238,7 +238,7 @@ def _(mo):
 
 @app.cell
 def _(mo):
-    cats_2 = mo.image(src='cats.png')
+    cats_2 = mo.image(src='./public/cats.png')
     return (cats_2,)
 
 
