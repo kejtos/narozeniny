@@ -164,7 +164,7 @@ def _(correct, incorrect, puzzles, results):
 def _(BytesIO, Image, base64, keep_probability, np):
     # pend = mo.image(src='./public/pend.png')
 
-    image = Image.open('./narozeniny/apps/public/pend.png').convert('L')
+    image = Image.open('/narozeniny/narozeniny/apps/public/pend.png').convert('L')
     # image = Image.open('./public/pend.png').convert('L')
     modified_image = np.array(image).copy()
 
