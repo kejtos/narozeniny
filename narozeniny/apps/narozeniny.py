@@ -238,10 +238,8 @@ def _(mo):
           <script async src="https://cdn.player.zone/static/embed.js?nocache=707516"></script>
         </body>
         </html>'
-    width="100%"
-    height="650"
-    rameborder="0"
-    scrolling="no">
+      frameborder="1"
+      scrolling="no">
     </iframe>"""
 
     nonogram = mo.iframe(
@@ -310,6 +308,12 @@ def _(mo, table_string):
 @app.cell
 def _(results):
     results
+    return
+
+
+@app.cell
+def _(Image):
+    Image.open('public/pend.png').convert('L')
     return
 
 
